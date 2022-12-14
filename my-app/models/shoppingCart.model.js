@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const path = require("path");
 const schema = mongoose.Schema;
 
 const ShoppingCart = new schema({
