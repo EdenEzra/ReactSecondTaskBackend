@@ -12,7 +12,7 @@ async function getActiveShoppingCart(req, res) {
 
 async function addProductToShoppingCart(req, res) {
     try {
-        const response = await shoppingCartService.addProductToShoppingCart(req.body.productId,req.body.count);
+        const response = await shoppingCartService.addProductToShoppingCart(req.body.productId);
         res.json({ success: true, data: response });
     } catch (ex) {
         console.error(ex.stack);
@@ -28,7 +28,7 @@ async function removeProductFromShoppingCart(req, res) {
         console.error(ex.stack);
         res.status(400).json({ success: false, error: ex });
     }
-    const response = await shoppingCartService.removeProductFromShoppingCart(req.body.productId,req.body.count);
+    const response = await shoppingCartService.removeProductFromShoppingCart(req.body.productId);
     res.json({ success: true, data: response });
 }
 

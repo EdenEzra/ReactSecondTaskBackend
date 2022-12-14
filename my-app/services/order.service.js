@@ -17,7 +17,7 @@ async function createOrder(orderObject) {
     })
 
     for (let product of cart.products) {
-        order.products.push({ product: product.product, count: product.count })
+        order.products.push({ product: product.product })
     }
 
     await shoppingCartService.deleteShoppingCart(cart._id);

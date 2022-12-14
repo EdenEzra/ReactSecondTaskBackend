@@ -11,7 +11,7 @@ async function getActiveShoppingCart() {
     return shoppingCart;
 }
 
-async function addProductToShoppingCart(productId, count) {
+async function addProductToShoppingCart(productId) {
     let shoppingCart = await ShoppingCart.findOne({active:true }).populate('products.product');
     if (!shoppingCart) {
         shoppingCart = await createShoppingCart(productId);
@@ -19,22 +19,9 @@ async function addProductToShoppingCart(productId, count) {
     } else {
         const shoppingCartId = shoppingCart._id;
         let product = await productService.getProduct(productId);
-        let productPrice = product.price
-        const updatedProduct = shoppingCart.products.filter(product => product.product._id == productId)
-
-        if (updatedProduct[0]) {
-
-            updatedProduct[0].count = count;
-        } else {
-            shoppingCart.products.push({ product: productId, count });
-        }
-        let totalPrice = 0;
-        for (let product of shoppingCart.products) {
-            const prodId = product.product._id || product.product;
-            const productPrice = (await productService.getProduct(prodId)).price;
-            totalPrice = totalPrice + (product.count * productPrice);
-        }
-        shoppingCart.totalPrice = totalPrice;
+        shoppingCart.products.push({ product: productId });
+            
+        shoppingCart.totalPrice = shoppingCart.totalPrice + product.price;
 
         const savedCart = await shoppingCart.save();
         return await ShoppingCart.findOne({ active: true }).populate('products.product').lean().exec();
@@ -42,24 +29,11 @@ async function addProductToShoppingCart(productId, count) {
 
 }
 
-async function removeProductFromShoppingCart(productId, count) {
+async function removeProductFromShoppingCart(productId) {
     const cart = await ShoppingCart.findOne({ active: true });
-    const currentProduct = cart.products.filter(product => product.product == productId);
-
-    if (count == 0) {
-        cart.products = cart.products.filter(product => product.product != productId);
-    } else {
-        currentProduct[0].count = count;
-    }
-
-    let totalPrice = 0;
-
-    for (let product of cart.products) {
-        const prodId = product.product._id || product.product;
-        const productPrice = (await productService.getProduct(prodId)).price;
-        totalPrice = totalPrice + (product.count * productPrice);
-    }
-    cart.totalPrice = totalPrice;
+    cart.products = cart.products.filter(product => product.product != productId);
+    const productPrice = (await productService.getProduct(prodId)).price;
+    cart.totalPrice = cart.totalPrice + productPrice;
 
     await cart.save();
     return await ShoppingCart.findOne({ active: true }).populate('products.product').lean().exec();
@@ -80,7 +54,7 @@ async function createShoppingCart(productId) {
         totalPrice: productPrice
     })
     if(productId)
-    shoppingCart.products.push({ product: ObjectId(productId),count:1 });
+    shoppingCart.products.push({ product: ObjectId(productId) });
 
     return await shoppingCart.save();
 }

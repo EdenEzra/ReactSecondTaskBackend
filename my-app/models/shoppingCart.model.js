@@ -7,10 +7,6 @@ const ShoppingCart = new schema({
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Product',
       required: true
-    }, count: {
-      type: Number,
-      required: false,
-      default: 1
     }
   }],
   active: {

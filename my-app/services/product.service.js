@@ -5,6 +5,11 @@ async function getAllProducts() {
     return await Product.find();
 }
 
+async function getProduct(id) {
+    const product = await Product.findOne({ _id: ObjectId(id) }).lean();
+    return product;
+}
+
 async function createProduct(name, description, price, pictures) {
     const findProduct = await Product.findOne({ "name": name });
     if (findProduct != null) {
@@ -25,5 +30,6 @@ async function createProduct(name, description, price, pictures) {
 
 module.exports = {
     getAllProducts,
+    getProduct,
     createProduct
 }
