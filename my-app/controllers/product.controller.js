@@ -16,8 +16,8 @@ async function getAllProducts(req, res) {
 async function createProduct(req, res) {
     try {
         
-        const { name, description, price, quantityInStock, pictures } = req.body
-        const response = await productService.createProduct(name, description, price, quantityInStock, pictures);
+        const { name, description, price, pictures } = req.body
+        const response = await productService.createProduct(name, description, price, pictures);
         if (response == null) {
             res.json({ success: true, message: "Created failed" });
         }
